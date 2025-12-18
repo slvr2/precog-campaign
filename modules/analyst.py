@@ -31,7 +31,7 @@ def processar_e_achar_padroes(df: pd.DataFrame) -> dict:
 
     # 3. Feature Engineering no Grupo (Matemática Correta)
     # Calcula ROAS Global do grupo (Evita média das médias)
-    analysis_group['roas'] = 0
+    analysis_group['roas'] = 0.0
     mask_spend = analysis_group['spend'] > 0
     analysis_group.loc[mask_spend, 'roas'] = (
         analysis_group.loc[mask_spend, 'revenue'] /
@@ -39,7 +39,7 @@ def processar_e_achar_padroes(df: pd.DataFrame) -> dict:
     )
         
     # Calcula Taxa de Conversão (CVR) - Útil para 'icp_comportamento'
-    analysis_group['cvr'] = 0
+    analysis_group['cvr'] = 0.0
     mask_clicks = analysis_group['clicks'] > 0
     analysis_group.loc[mask_clicks, 'cvr'] = (
         analysis_group.loc[mask_clicks, 'conversions'] /

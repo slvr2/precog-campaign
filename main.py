@@ -17,28 +17,32 @@ def main():
     init_db()
 
     # 1. Ingestão de Dados
-    csv_path = "data/campaign_data.csv"
+    DATA_DIR = "data"
 
-    # Mock para desenvolvimento local
-    if not os.path.exists(csv_path):
-        print("⚠️ CSV não encontrado. Gerando dados dummy para teste...")
+    # Busca todos os CSVs na pasta
+    csv_files = [
+        f for f in os.listdir(DATA_DIR)
+        if f.lower().endswith(".csv")
+    ]
 
-        data = {
-            "age_range": ["25-34", "25-34", "35-44", "18-24"],
-            "gender": ["F", "F", "M", "F"],
-            "spend": [100, 150, 50, 50],
-            "revenue": [100, 150, 500, 25],
-            "clicks": [80, 120, 90, 40],
-            "impressions": [2000, 3000, 1500, 1000],
-            "conversions": [2, 3, 15, 1],
-        }
+    if not csv_files:
+        print("❌ Nenhum arquivo CSV encontrado na pasta 'data/'.")
+        return
 
-        os.makedirs("data", exist_ok=True)
-        pd.DataFrame(data).to_csv(csv_path, index=False)
+    if len(csv_files) > 1:
+        print(
+            f"❌ Mais de um CSV encontrado na pasta 'data': {csv_files}. "
+            "Deixe apenas um arquivo para execução."
+        )
+        return
 
+    csv_path = os.path.join(DATA_DIR, csv_files[0])
+    print(f"📂 Usando arquivo de dados: {csv_files[0]}")
+
+    # Leitura do CSV
     try:
         df = pd.read_csv(csv_path)
-        print(f"📂 Dados carregados com sucesso ({len(df)} linhas).")
+        print(f"📊 Dados carregados com sucesso ({len(df)} linhas).")
     except Exception as e:
         print(f"❌ Erro crítico na ingestão de dados: {e}")
         return
