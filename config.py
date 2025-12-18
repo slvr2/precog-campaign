@@ -5,15 +5,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    # Configurações do Banco de Dados (PostgreSQL)
-    DB_USER = os.getenv("POSTGRES_USER", "admin")
-    DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "secretpassword")
-    DB_HOST = os.getenv("POSTGRES_HOST", "localhost")
-    DB_PORT = os.getenv("POSTGRES_PORT", "5432")
-    DB_NAME = os.getenv("POSTGRES_DB", "growth_engine")
-    
-    # String de conexão SQLAlchemy
-    DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    # --- CONEXÃO COM O BANCO DE DADOS ---
+    # Agora ele busca a URL completa diretamente do .env
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
-    # Configuração do LLM (Exemplo com Gemini/Google)
+    # [FIX CRÍTICO PARA SUPABASE]
+    # O Supabase às vezes fornece a URL começando com "postgres://".
+    # O SQLAlchemy (Python) prefere "postgresql://".
+    # Esta linha faz a correção automática se necessário:
+    if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+    if not DATABASE_URL:
+        raise ValueError("❌ Erro: A variável DATABASE_URL não foi encontrada no arquivo .env")
+
+    # --- CHAVES DE API (IA) ---
     LLM_API_KEY = os.getenv("LLM_API_KEY")

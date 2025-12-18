@@ -6,6 +6,7 @@ def gerar_estrategia_llm(padroes: dict) -> dict:
     """
     Usa o Google GenAI (Nova SDK) para gerar uma estratégia.
     """
+    
     print("🧠 [Strategist] A enviar dados para o Google Gemini (Novo Cliente)...")
 
     if padroes.get("status") != "success":

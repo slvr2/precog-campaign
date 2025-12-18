@@ -1,47 +1,10 @@
 version: '3.8'
 
 services:
-  # --- Serviço 1: Banco de Dados (Memória) ---
-  postgres:
-    image: postgres:15-alpine
-    container_name: growth_postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-admin}         # Lê do .env ou usa default
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret} # Lê do .env ou usa default
-      POSTGRES_DB: ${POSTGRES_DB:-growth_engine}
-    ports:
-      - "5432:5432" # Expõe porta para sua máquina local (App A roda localmente)
-    volumes:
-      - pg_data:/var/lib/postgresql/data
-    networks:
-      - growth_net
-
-  # --- Serviço 2: Filas e Cache (Rate Limit) ---
+  # Usamos Redis para as filas do Celery
   redis:
     image: redis:7-alpine
     container_name: growth_redis
     restart: always
     ports:
       - "6379:6379"
-    networks:
-      - growth_net
-
-  # --- Serviço 3: Interface Visual (Database Viewer) ---
-  adminer:
-    image: adminer
-    container_name: growth_adminer
-    restart: always
-    ports:
-      - "8080:8080" # Acesso via http://localhost:8080
-    networks:
-      - growth_net
-
-# Definição de volumes para persistência
-volumes:
-  pg_data:
-
-# Rede interna para comunicação entre containers
-networks:
-  growth_net:
-    driver: bridge
