@@ -1,0 +1,6 @@
+age_range,gender,platform,device,spend,revenue,clicks,impressions,conversions
+18-24,F,instagram,mobile,80,60,70,3000,1
+25-34,F,instagram,mobile,150,220,140,4200,4
+25-34,M,instagram,desktop,60,480,95,2100,14
+35-44,M,facebook,mobile,200,210,160,5000,5
+45-54,F,facebook,desktop,90,100,85,2800,2
