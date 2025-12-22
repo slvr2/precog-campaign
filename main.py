@@ -6,6 +6,7 @@ from modules.analyst import processar_e_achar_padroes
 from modules.strategist import gerar_estrategia_llm
 from modules.persistence import init_db, create_strategy_record
 from modules.feedback_agent import FeedbackAgent
+from modules.score_agent import ScoreAgent
 
 PLATAFORMA = "meta_ads"      # ou google_ads
 OBJETIVO = "construcao_de_marca_e_desejo"       # ou leads, traffic, sales
@@ -63,6 +64,23 @@ def main():
         print("\n🧠 --- ESTRATÉGIA GERADA PELA IA ---")
         print(json.dumps(estrategia_final, indent=4, ensure_ascii=False))
         print("---------------------------------\n")
+
+        # 3.1 SCORE da Estratégia
+        score_result = ScoreAgent.avaliar(estrategia_final)
+
+        print("\n📊 --- SCORE DA ESTRATÉGIA ---")
+        print(json.dumps(score_result, indent=4, ensure_ascii=False))
+        print("-----------------------------\n")
+
+        # Gate de segurança
+        if score_result["confidence_score"] < 0.6:
+            estrategia_final["status"] = "REJECTED_BY_SCORE"
+            estrategia_final["score_avaliacao"] = score_result
+            print("🚫 Estratégia bloqueada por baixo score de confiança.")
+            return
+
+        # Anexa score ao payload final
+        estrategia_final["score_avaliacao"] = score_result
 
     except Exception as e:
         print(f"❌ Erro na geração da estratégia: {e}")
