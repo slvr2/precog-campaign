@@ -52,6 +52,7 @@ class CampaignStrategy(Base):
     # HIPÓTESE / CONTEXTO
     criativo_tipo = Column(String)  # video, imagem, carrossel
     posicionamentos = Column(JSON)  # feed, reels, stories
+    racional_estrategico = Column(Text, nullable=True)
 
     # CONTROLE
     status = Column(String, default="PENDING", index=True)
@@ -123,7 +124,6 @@ def init_db():
 
     try:
         Base.metadata.create_all(bind=engine)
-        print("✅ [Persistence] Tabelas verificadas/criadas com sucesso.")
     except Exception as e:
         raise RuntimeError(
             "❌ [Persistence] Falha ao inicializar o banco de dados."
@@ -148,7 +148,6 @@ def get_db_session():
         db.close()
 
 # --- 4. Funções de Negócio (CRUD) ---
-
 def create_strategy_record(data: dict, name: str):
     """
     Persiste a estratégia.
@@ -171,6 +170,7 @@ def create_strategy_record(data: dict, name: str):
             
             criativo_tipo=data.get("criativo_tipo"),
             posicionamentos=data.get("posicionamentos", []),
+            racional_estrategico=data.get("racional_estrategico"),
             
             status="PENDING",
             versao_modelo_llm=data.get("versao_modelo_llm"),

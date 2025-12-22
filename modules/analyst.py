@@ -6,8 +6,6 @@ def processar_e_achar_padroes(df: pd.DataFrame) -> dict:
     Retorna um dicionário estruturado compatível com o Schema do Banco de Dados.
     """
 
-    print("📊 [Analyst] Iniciando análise de dados...")
-
     # 1. Limpeza Básica e Garantia de Tipos
     cols_numericas = ['spend', 'revenue', 'clicks', 'impressions', 'conversions']
     for col in cols_numericas:
@@ -63,7 +61,8 @@ def processar_e_achar_padroes(df: pd.DataFrame) -> dict:
     best_segment = valid_segments.loc[valid_segments['roas'].idxmax()]
 
     # 6. Formatação para o Novo Schema de Persistência
-    resumo_padroes = { # Aqui montamos os JSONs que o banco espera
+    # Aqui montamos os JSONs que o banco espera
+    resumo_padroes = {
         "status": "success",
         
         # Mapeia direto para a coluna 'icp_demografia'
@@ -94,6 +93,4 @@ def processar_e_achar_padroes(df: pd.DataFrame) -> dict:
             f"e Taxa de Conversão de {round(best_segment['cvr']*100, 1)}%."
         )
     }
-
-    print(f"✅ [Analyst] Padrão identificado: {resumo_padroes['insight_text']}")
     return resumo_padroes
