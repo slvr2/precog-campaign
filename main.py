@@ -5,6 +5,7 @@ from datetime import datetime
 from modules.analyst import processar_e_achar_padroes
 from modules.strategist import gerar_estrategia_llm
 from modules.persistence import init_db, create_strategy_record
+from modules.feedback_agent import FeedbackAgent
 
 PLATAFORMA = "meta_ads"      # ou google_ads
 OBJETIVO = "construcao_de_marca_e_desejo"       # ou leads, traffic, sales
@@ -80,6 +81,14 @@ def main():
             f"💾 Estratégia persistida com sucesso | "
             f"ID={strategy_record.id} | Status={strategy_record.status}"
         )
+
+        # 5. Feedback Agent (SIMULADO)
+        feedback = FeedbackAgent.gerar_feedback_simulado(
+            strategy_id=strategy_record.id
+        )
+
+        print("\n🔄 --- FEEDBACK SIMULADO ---")
+        print(json.dumps(feedback, indent=4, ensure_ascii=False))
 
     except Exception as e:
         print(f"❌ Falha ao persistir estratégia: {e}")
