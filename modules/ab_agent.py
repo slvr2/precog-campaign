@@ -84,7 +84,7 @@ class ABAgent:
             "resultados": resultados
         }
 
-    def _desempate(self, a: dict, b: dict) -> dict:
+    def _desempate(a: dict, b: dict) -> dict:
         """
         Aplica critérios determinísticos de desempate.
         Retorna a melhor estratégia.

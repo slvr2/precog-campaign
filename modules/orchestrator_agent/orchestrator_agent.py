@@ -26,7 +26,9 @@ class OrchestratorAgent:
         Executa o pipeline completo de decisão estratégica.
         Retorna a estratégia final ou um bloqueio.
         """
-
+    
+        print("DEBUG → plataforma:", self.plataforma)
+        print("DEBUG → objetivo:", self.objetivo)
         print("🧠 Iniciando decisão estratégica...")
 
         # DECIDIR QUANTAS ESTRATÉGIAS GERAR
@@ -42,14 +44,13 @@ class OrchestratorAgent:
         if num_variacoes > 1:
             ab_result = ABAgent.comparar(estrategias)
 
-            print("🧪 Resultado A/B:")
-            print(ab_result)
+            print(f"🧪 A/B Test | Status={ab_result['status']}")
 
-            # ✅ Vencedor claro
+            # Vencedor claro
             if ab_result["status"] in ("WINNER", "WINNER_BY_TIEBREAK"):
                 estrategia_final = ab_result["winner_strategy"]
 
-            # ⚠️ Empate técnico
+            # Empate técnico
             elif ab_result["status"] == "TIE":
                 context = self.memory.get_context()
 
@@ -62,7 +63,7 @@ class OrchestratorAgent:
                         ab_result=ab_result
                     )
 
-            # 🚫 Nenhuma estratégia válida
+            # Nenhuma estratégia válida
             else:
                 return self._bloqueio(
                     reason="AB_NO_WINNER",
@@ -113,14 +114,44 @@ class OrchestratorAgent:
 
     # DECISION LOGIC
     def _decidir_num_variacoes(self) -> int:
+        """
+        Política adaptativa de geração de estratégias.
+        Decide quantas variações gerar com base em maturidade,
+        confiança e estabilidade do sistema.
+        """
+
         context = self.memory.get_context()
 
+        executions = context.get("executions_count", 0)
         historical_avg = context.get("historical_confidence_avg", 0.6)
+        recent = context.get("recent_confidences", [])
 
-        if historical_avg >= 0.8:
+        # COLD START — pouca memória
+        if executions < 3:
+            print("🧊 Cold start detectado → A/B exploratório")
+            return 2
+
+        # Instabilidade recente
+        if len(recent) >= 3:
+            variacao = max(recent) - min(recent)
+
+            if variacao > 0.15:
+                print("📉 Instabilidade detectada → A/B defensivo")
+                return 2
+
+        # Alta confiança sustentada
+        if historical_avg >= 0.85 and executions >= 5:
+            print("🧠 Alta confiança histórica → execução direta")
             return 1
 
-        return 2
+        # Confiança média
+        if historical_avg >= 0.7:
+            print("⚖️ Confiança moderada → A/B leve")
+            return 2
+
+        # Baixa confiança persistente
+        print("🚨 Baixa confiança → exploração reforçada")
+        return 3
 
     def _bloqueio(self, reason: str, **extras) -> dict:
         """
