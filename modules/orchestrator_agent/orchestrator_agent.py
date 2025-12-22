@@ -27,26 +27,22 @@ class OrchestratorAgent:
         Retorna a estratégia final ou um bloqueio.
         """
 
-        print("🧠 [Orchestrator] Iniciando decisão estratégica...")
+        print("🧠 Iniciando decisão estratégica...")
 
-        # 1️⃣ DECIDIR QUANTAS ESTRATÉGIAS GERAR
+        # DECIDIR QUANTAS ESTRATÉGIAS GERAR
         num_variacoes = self._decidir_num_variacoes()
-        print(f"🧪 [Orchestrator] Gerando {num_variacoes} variações.")
+        print(f"🧪 Gerando {num_variacoes} variações.")
 
         estrategias = [
-            gerar_estrategia_llm(
-                insights,
-                plataforma=self.plataforma,
-                objetivo=self.objetivo
-            )
+            gerar_estrategia_llm(insights, plataforma=self.plataforma, objetivo=self.objetivo)
             for _ in range(num_variacoes)
         ]
 
-        # 2️⃣ A/B TEST (se aplicável)
+        # A/B TEST
         if num_variacoes > 1:
             ab_result = ABAgent.comparar(estrategias)
 
-            print("🧪 [Orchestrator] Resultado A/B:")
+            print("🧪 Resultado A/B:")
             print(ab_result)
 
             if ab_result["status"] != "WINNER":
@@ -60,10 +56,10 @@ class OrchestratorAgent:
             ab_result = None
             estrategia_final = estrategias[0]
 
-        # 3️⃣ SCORE DA ESTRATÉGIA
+        # SCORE DA ESTRATÉGIA
         score = ScoreAgent.avaliar(estrategia_final)
 
-        print("📊 [Orchestrator] Score calculado:", score)
+        print("📊 Score calculado:", score)
 
         if score["confidence_score"] < self.confidence_threshold:
             self.memory.record_execution(
@@ -77,18 +73,18 @@ class OrchestratorAgent:
                 score=score
             )
 
-        # 4️⃣ MEMÓRIA (APRENDIZADO)
+        # MEMÓRIA (APRENDIZADO)
         self.memory.record_execution(
             strategy=estrategia_final,
             score=score,
             ab_result=ab_result
         )
 
-        # 5️⃣ RESULTADO FINAL
+        # RESULTADO FINAL
         estrategia_final["score_avaliacao"] = score
         estrategia_final["status"] = "APPROVED_BY_ORCHESTRATOR"
 
-        print("✅ [Orchestrator] Estratégia aprovada.")
+        print("✅ Estratégia aprovada.")
 
         return {
             "status": "APPROVED",
@@ -98,10 +94,7 @@ class OrchestratorAgent:
             "memory_context": self.memory.get_context()
         }
 
-    # =====================================================
     # DECISION LOGIC
-    # =====================================================
-
     def _decidir_num_variacoes(self) -> int:
         """
         Decide se gera 1 ou 2+ estratégias com base na memória.
@@ -119,7 +112,7 @@ class OrchestratorAgent:
         Retorno padrão de bloqueio.
         """
 
-        print(f"🚫 [Orchestrator] Pipeline bloqueado: {reason}")
+        print(f"🚫 Pipeline bloqueado: {reason}")
 
         return {
             "status": "BLOCKED",

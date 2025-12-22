@@ -1,6 +1,6 @@
 from modules.persistence import SessionLocal, CampaignStrategy
 
-# É necessário atualizações para ser utilizado com daods reais!
+# É necessário atualizações para ser utilizado com dados reais!
 class FeedbackAgent:
     """
     Feedback Agent (fase de teste).

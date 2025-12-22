@@ -43,7 +43,7 @@ class ABAgent:
         melhor = resultados[0]
         segundo = resultados[1]
 
-        # 1️⃣ Caso: nenhuma estratégia aceitável
+        # Caso: nenhuma estratégia aceitável
         if melhor["confidence_score"] < ABAgent.SCORE_MINIMO:
             return {
                 "status": "NO_WINNER",
@@ -51,7 +51,7 @@ class ABAgent:
                 "resultados": resultados
             }
 
-        # 2️⃣ Caso: empate técnico
+        # Caso: empate técnico
         if (
             melhor["confidence_score"] - segundo["confidence_score"]
             < ABAgent.DIFERENCA_MINIMA
@@ -64,7 +64,7 @@ class ABAgent:
                 "resultados": resultados
             }
 
-        # 3️⃣ Caso: vencedor claro
+        # Caso: vencedor claro
         return {
             "status": "WINNER",
             "winner_index": melhor["index"],

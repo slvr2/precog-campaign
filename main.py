@@ -3,12 +3,8 @@ import os
 import pandas as pd
 from datetime import datetime
 from modules.analyst import processar_e_achar_padroes
-from modules.strategist import gerar_estrategia_llm
 from modules.persistence import init_db, create_strategy_record
 from modules.feedback_agent import FeedbackAgent
-from modules.score_agent import ScoreAgent
-from modules.ab_agent import ABAgent
-from modules.memory_agent.memory_agent import MemoryAgent
 from modules.orchestrator_agent.orchestrator_agent import OrchestratorAgent
 
 
@@ -60,18 +56,15 @@ def main():
     
     # 3. Estratégia (Insights → LLM) + A/B TEST
     try:
-        orchestrator = OrchestratorAgent(
-            plataforma=PLATAFORMA,
-            objetivo=OBJETIVO
-        )
-
+        orchestrator = OrchestratorAgent(plataforma=PLATAFORMA, objetivo=OBJETIVO)
         result = orchestrator.executar_pipeline(insights)
 
         if result["status"] != "APPROVED":
             print("🚫 Pipeline interrompido pelo Orchestrator.")
             return
-
+        
         estrategia_final = result["strategy"]
+
     except Exception as e:
         print(f"❌ Erro na chamada do Orchestrator: {e}")
         return
