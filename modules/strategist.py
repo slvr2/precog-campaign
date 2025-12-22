@@ -102,7 +102,7 @@ def gerar_estrategia_llm(padroes: dict, plataforma: str, objetivo: str) -> dict:
     except Exception as e:
         # Fallback simples para não travar o sistema
         return {
-            "plataforma": "instagram",
+            "plataforma": plataforma,
             "objetivo": "erro_fallback",
             "icp_demografia": {},
             "icp_comportamento": {},

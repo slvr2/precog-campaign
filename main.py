@@ -2,17 +2,15 @@ import json
 import os
 import pandas as pd
 from datetime import datetime
-
-# Pipeline Core
 from modules.analyst import processar_e_achar_padroes
 from modules.strategist import gerar_estrategia_llm
-
-# Persistence (fonte única de verdade)
 from modules.persistence import init_db, create_strategy_record
 
+PLATAFORMA = "meta_ads"      # ou google_ads
+OBJETIVO = "leads"       # ou leads, traffic, sales
 
 def main():
-    print("\n🚀 --- INICIANDO INTELLIGENCE CORE (APP A) ---\n")
+    print("\n🚀 --- INICIANDO PRECOG ---\n")
 
     init_db()
 
@@ -51,12 +49,12 @@ def main():
     insights = processar_e_achar_padroes(df)
 
     if insights.get("status") != "success":
-        print(f"⏹️ Processo interrompido: {insights.get('reason')}")
+        print(f"❌ Processo interrompido: {insights.get('reason')}")
         return
     
-    # 3. Estratégia (Insights → Plano Tático via LLM)
+    # 3. Estratégia (Insights → LLM)
     try:
-        estrategia_final = gerar_estrategia_llm(insights)
+        estrategia_final = gerar_estrategia_llm(insights, plataforma=PLATAFORMA, objetivo=OBJETIVO)
 
         if not estrategia_final.get("perfil_alvo_descricao"):
             raise ValueError("Payload da estratégia incompleto.")
@@ -87,8 +85,7 @@ def main():
         print(f"❌ Falha ao persistir estratégia: {e}")
         return
 
-    print("\n✅ --- PIPELINE FINALIZADO COM SUCESSO (APP A) ---\n")
-
+    print("\n✅ --- PIPELINE FINALIZADO COM SUCESSO ---\n")
 
 if __name__ == "__main__":
     main()
