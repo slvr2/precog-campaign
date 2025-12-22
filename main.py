@@ -7,6 +7,7 @@ from modules.strategist import gerar_estrategia_llm
 from modules.persistence import init_db, create_strategy_record
 from modules.feedback_agent import FeedbackAgent
 from modules.score_agent import ScoreAgent
+from modules.ab_agent import ABAgent
 
 PLATAFORMA = "meta_ads"      # ou google_ads
 OBJETIVO = "construcao_de_marca_e_desejo"       # ou leads, traffic, sales
@@ -54,10 +55,37 @@ def main():
         print(f"❌ Processo interrompido: {insights.get('reason')}")
         return
     
-    # 3. Estratégia (Insights → LLM)
+    # 3. Estratégia (Insights → LLM) + A/B TEST
     try:
-        estrategia_final = gerar_estrategia_llm(insights, plataforma=PLATAFORMA, objetivo=OBJETIVO)
+        print("🧪 Gerando variações de estratégia para A/B Test...")
 
+        estrategia_A = gerar_estrategia_llm(
+            insights,
+            plataforma=PLATAFORMA,
+            objetivo=OBJETIVO
+        )
+
+        estrategia_B = gerar_estrategia_llm(
+            insights,
+            plataforma=PLATAFORMA,
+            objetivo=OBJETIVO
+        )
+
+        ab_result = ABAgent.comparar([
+            estrategia_A,
+            estrategia_B
+        ])
+
+        print("\n🧪 --- RESULTADO A/B ---")
+        print(json.dumps(ab_result, indent=4, ensure_ascii=False))
+        print("------------------------\n")
+
+        if ab_result["status"] != "WINNER":
+            print("🚫 Nenhuma estratégia vencedora clara.")
+            return
+
+        estrategia_final = ab_result["winner_strategy"]
+        
         if not estrategia_final.get("perfil_alvo_descricao"):
             raise ValueError("Payload da estratégia incompleto.")
 
