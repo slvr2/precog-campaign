@@ -45,13 +45,30 @@ class OrchestratorAgent:
             print("🧪 Resultado A/B:")
             print(ab_result)
 
-            if ab_result["status"] != "WINNER":
+            # ✅ Vencedor claro
+            if ab_result["status"] in ("WINNER", "WINNER_BY_TIEBREAK"):
+                estrategia_final = ab_result["winner_strategy"]
+
+            # ⚠️ Empate técnico
+            elif ab_result["status"] == "TIE":
+                context = self.memory.get_context()
+
+                if context.get("executions_count", 0) < 5:
+                    print("⚠️ TIE em cold start → aceitando baseline")
+                    estrategia_final = ab_result["resultados"][0]["estrategia"]
+                else:
+                    return self._bloqueio(
+                        reason="AB_INCONCLUSIVE",
+                        ab_result=ab_result
+                    )
+
+            # 🚫 Nenhuma estratégia válida
+            else:
                 return self._bloqueio(
-                    reason="AB_INCONCLUSIVE",
+                    reason="AB_NO_WINNER",
                     ab_result=ab_result
                 )
 
-            estrategia_final = ab_result["winner_strategy"]
         else:
             ab_result = None
             estrategia_final = estrategias[0]
