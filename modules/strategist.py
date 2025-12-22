@@ -52,15 +52,15 @@ def gerar_estrategia_llm(padroes: dict, plataforma: str, objetivo: str) -> dict:
     ---
 
     ## 4. FORMATO DE SAÍDA (JSON OBRIGATÓRIO)
-    {
+    {{
     "perfil_alvo_descricao": "string",
     "icp_interesses": ["string"],
     "mensagem_template": "string",
     "palavras_chave": ["string"],
     "criativo_tipo": "string",
     "posicionamentos": ["string"],
-    "racional_estrategico": "string (Explique brevemente por que escolheu estes interesses)"
-    }
+    "racional_estrategico": "string (Explique brevemente por que essa estratégia funcionará para este público específico)"
+    }}
     """
 
     try:
