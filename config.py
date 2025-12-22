@@ -8,7 +8,7 @@ class Config:
     # --- CONEXÃO COM O BANCO DE DADOS ---
     DATABASE_URL = os.getenv("DATABASE_URL")
 
-    # [FIX CRÍTICO PARA SUPABASE]
+    # Fix para supabase
     if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
