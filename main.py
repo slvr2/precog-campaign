@@ -8,6 +8,7 @@ from modules.persistence import init_db, create_strategy_record
 from modules.feedback_agent import FeedbackAgent
 from modules.score_agent import ScoreAgent
 from modules.ab_agent import ABAgent
+from modules.memory_agent.memory_agent import MemoryAgent
 
 PLATAFORMA = "meta_ads"      # ou google_ads
 OBJETIVO = "construcao_de_marca_e_desejo"       # ou leads, traffic, sales
@@ -85,7 +86,7 @@ def main():
             return
 
         estrategia_final = ab_result["winner_strategy"]
-        
+
         if not estrategia_final.get("perfil_alvo_descricao"):
             raise ValueError("Payload da estratégia incompleto.")
 
@@ -109,6 +110,17 @@ def main():
 
         # Anexa score ao payload final
         estrategia_final["score_avaliacao"] = score_result
+
+        memory = MemoryAgent()
+
+        memory.record_execution(
+            strategy=estrategia_final,
+            score=score_result,
+            ab_result=ab_result
+        )
+
+        print("\n🧠 --- MEMORY CONTEXT ---")
+        print(json.dumps(memory.get_context(), indent=4, ensure_ascii=False))
 
     except Exception as e:
         print(f"❌ Erro na geração da estratégia: {e}")
