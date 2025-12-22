@@ -96,16 +96,14 @@ class OrchestratorAgent:
 
     # DECISION LOGIC
     def _decidir_num_variacoes(self) -> int:
-        """
-        Decide se gera 1 ou 2+ estratégias com base na memória.
-        """
-
         context = self.memory.get_context()
 
-        if context["long_term"]["historical_confidence_avg"] >= 0.8:
-            return 1  # Confiança alta → execução direta
+        historical_avg = context.get("historical_confidence_avg", 0.6)
 
-        return 2  # Exploração controlada
+        if historical_avg >= 0.8:
+            return 1
+
+        return 2
 
     def _bloqueio(self, reason: str, **extras) -> dict:
         """
