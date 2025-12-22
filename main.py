@@ -9,6 +9,8 @@ from modules.feedback_agent import FeedbackAgent
 from modules.score_agent import ScoreAgent
 from modules.ab_agent import ABAgent
 from modules.memory_agent.memory_agent import MemoryAgent
+from modules.orchestrator_agent.orchestrator_agent import OrchestratorAgent
+
 
 PLATAFORMA = "meta_ads"      # ou google_ads
 OBJETIVO = "construcao_de_marca_e_desejo"       # ou leads, traffic, sales
@@ -58,72 +60,20 @@ def main():
     
     # 3. Estratégia (Insights → LLM) + A/B TEST
     try:
-        print("🧪 Gerando variações de estratégia para A/B Test...")
-
-        estrategia_A = gerar_estrategia_llm(
-            insights,
+        orchestrator = OrchestratorAgent(
             plataforma=PLATAFORMA,
             objetivo=OBJETIVO
         )
 
-        estrategia_B = gerar_estrategia_llm(
-            insights,
-            plataforma=PLATAFORMA,
-            objetivo=OBJETIVO
-        )
+        result = orchestrator.executar_pipeline(insights)
 
-        ab_result = ABAgent.comparar([
-            estrategia_A,
-            estrategia_B
-        ])
-
-        print("\n🧪 --- RESULTADO A/B ---")
-        print(json.dumps(ab_result, indent=4, ensure_ascii=False))
-        print("------------------------\n")
-
-        if ab_result["status"] != "WINNER":
-            print("🚫 Nenhuma estratégia vencedora clara.")
+        if result["status"] != "APPROVED":
+            print("🚫 Pipeline interrompido pelo Orchestrator.")
             return
 
-        estrategia_final = ab_result["winner_strategy"]
-
-        if not estrategia_final.get("perfil_alvo_descricao"):
-            raise ValueError("Payload da estratégia incompleto.")
-
-        print("\n🧠 --- ESTRATÉGIA GERADA PELA IA ---")
-        print(json.dumps(estrategia_final, indent=4, ensure_ascii=False))
-        print("---------------------------------\n")
-
-        # 3.1 SCORE da Estratégia
-        score_result = ScoreAgent.avaliar(estrategia_final)
-
-        print("\n📊 --- SCORE DA ESTRATÉGIA ---")
-        print(json.dumps(score_result, indent=4, ensure_ascii=False))
-        print("-----------------------------\n")
-
-        # Gate de segurança
-        if score_result["confidence_score"] < 0.6:
-            estrategia_final["status"] = "REJECTED_BY_SCORE"
-            estrategia_final["score_avaliacao"] = score_result
-            print("🚫 Estratégia bloqueada por baixo score de confiança.")
-            return
-
-        # Anexa score ao payload final
-        estrategia_final["score_avaliacao"] = score_result
-
-        memory = MemoryAgent()
-
-        memory.record_execution(
-            strategy=estrategia_final,
-            score=score_result,
-            ab_result=ab_result
-        )
-
-        print("\n🧠 --- MEMORY CONTEXT ---")
-        print(json.dumps(memory.get_context(), indent=4, ensure_ascii=False))
-
+        estrategia_final = result["strategy"]
     except Exception as e:
-        print(f"❌ Erro na geração da estratégia: {e}")
+        print(f"❌ Erro na chamada do Orchestrator: {e}")
         return
 
     # 4. Persistência (Handoff para App B)
