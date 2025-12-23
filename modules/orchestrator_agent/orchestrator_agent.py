@@ -10,12 +10,7 @@ class OrchestratorAgent:
     Controla o fluxo estratégico antes da persistência.
     """
 
-    def __init__(
-        self,
-        plataforma: str,
-        objetivo: str,
-        confidence_threshold: float = 0.6
-    ):
+    def __init__(self, plataforma: str, objetivo: str, confidence_threshold: float = 0.6):
         self.plataforma = plataforma
         self.objetivo = objetivo
         self.confidence_threshold = confidence_threshold
@@ -27,8 +22,6 @@ class OrchestratorAgent:
         Retorna a estratégia final ou um bloqueio.
         """
     
-        print("DEBUG → plataforma:", self.plataforma)
-        print("DEBUG → objetivo:", self.objetivo)
         print("🧠 Iniciando decisão estratégica...")
 
         # DECIDIR QUANTAS ESTRATÉGIAS GERAR

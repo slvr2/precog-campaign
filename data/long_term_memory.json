@@ -1,0 +1,58 @@
+{
+    "global_stats": {
+        "total_executions": 6,
+        "confidence_sum": 5.8
+    },
+    "platform_success": {
+        "meta_ads": 6
+    },
+    "creative_success": {
+        "Vídeos curtos dinâmicos e carrosséis com storytelling de sucesso, destacando benefícios e aspirações. Imagens de alta qualidade que transmitam modernidade e exclusividade.": 1,
+        "Vídeos curtos inspiradores, carrossel de estilo de vida, imagens de alta qualidade com foco em momentos e experiências autênticas, depoimentos que geram identificação.": 1,
+        "Vídeos curtos e carrosséis de imagens com foco em storytelling, mostrando mulheres reais em situações de bem-estar, lazer e convívio social, transmitindo aspiracionalidade e confiança.": 1,
+        "vídeo (formato curto e impactante)": 1,
+        "Vídeos curtos e dinâmicos, carrosséis de imagens de lifestyle e stories interativos.": 1,
+        "Vídeos curtos dinâmicos, Carrossel interativo, Stories e Reels autênticos": 1
+    },
+    "interest_success": {
+        "Tecnologia e Inovação": 1,
+        "Desenvolvimento Pessoal e Carreira": 1,
+        "Finanças e Investimentos": 1,
+        "Estilo de Vida Urbano": 1,
+        "Viagens e Experiências": 1,
+        "Saúde e Bem-estar": 1,
+        "Entretenimento Digital": 1,
+        "Automóveis e Motos": 1,
+        "Esportes": 1,
+        "Bem-estar e saúde": 1,
+        "Qualidade de vida": 2,
+        "Autocuidado": 1,
+        "Desenvolvimento pessoal": 1,
+        "Estilo de vida": 1,
+        "Viagens": 2,
+        "Cultura": 1,
+        "Bem-estar": 1,
+        "Saúde": 1,
+        "Família": 1,
+        "Casa e Lar": 1,
+        "Moda e Estilo": 1,
+        "Cultura e Lazer": 1,
+        "tecnologia": 1,
+        "inovação": 1,
+        "esportes": 1,
+        "entretenimento": 1,
+        "viagens": 1,
+        "desenvolvimento pessoal": 1,
+        "finanças e investimento": 1,
+        "moda e estilo": 1,
+        "beleza e autocuidado": 1,
+        "música e entretenimento": 1,
+        "redes sociais": 1,
+        "tendências de lifestyle": 1,
+        "Tecnologia e inovação": 1,
+        "Entretenimento digital": 1,
+        "Estilo de vida e tendências": 1,
+        "Esportes e lazer": 1,
+        "Viagens e experiências": 1
+    }
+}
